@@ -9,7 +9,8 @@ bit twiddling skill.
 
 The object is much like Core-War where you must destroy your opponent
 by forcing them to execute a bad instruction. Each player is given up
-to four threads, once all 4 of your threads are dead, so are you. 
+to four threads, once all 4 of your threads are dead, so are you. Also,
+watch out for bonuses, powerups and traps.
 
 
 Your interface into the game is via gamepads, which, I believe, makes
