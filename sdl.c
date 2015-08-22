@@ -63,12 +63,6 @@ int sdl_main_loop(SDL_Surface *screen, goat_game *game)
 {
      int keep_going = 1;
      SDL_Event event;
-     unsigned char text_buffer[80 * 25];
-     int i;
-
-     for (i = 0 ; i < 80 * 25; i++) {
-          text_buffer[i] = i % 255;
-     }
 
      while (keep_going) {
           if (SDL_PollEvent(&event)) {

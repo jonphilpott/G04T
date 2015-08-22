@@ -36,6 +36,11 @@ void free_text_buffer(text_buffer *text_buffer)
      free(text_buffer);
 }
 
+void free_goat_player_view(goat_player_view *view)
+{
+     free(view);
+}
+
 goat_player_view *
 make_goat_player_view(goat_player *player,
                       goat_player *opponent,
@@ -95,9 +100,9 @@ void goat_player_view_refresh(goat_player_view *view)
 
           snprintf(line_buffer, 32, "%04X%c%02X%c%02X %s %02Xh", 
                    loc, 
-                   (p == ptr) ? '>' : ' ',
+                   (p == ptr) ? '\x10' : ' ',
                    a, 
-                   (p+1 == ptr) ? '>' : ' ',
+                   (p+1 == ptr) ? '\x10' : ' ',
                    b,
                    m,
                    (gi != NULL && gi->has_arg == 1) ? b : 0

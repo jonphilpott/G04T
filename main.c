@@ -11,6 +11,8 @@ int main(int argc, char *argv[])
 
      sdl_main_loop(screen, game);
 
+     free_goat_game(game);
+
      return 0;
 }
 

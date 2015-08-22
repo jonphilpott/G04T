@@ -45,5 +45,13 @@ goat_game * make_goat_game()
 }
 
 
-void free_goat_game(goat_game *game) { }
-
+void free_goat_game(goat_game *game) 
+{ 
+     free_goat_player_view(game->p1_view);
+     free_goat_player_view(game->p2_view);
+     free_text_buffer(game->text_buffer);
+     free_goat_player(game->p1);
+     free_goat_player(game->p2);
+     free_goat_mem(game->mem);
+     free(game);
+}

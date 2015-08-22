@@ -41,6 +41,7 @@ goat_player_view * make_goat_player_view(goat_player *player,
      );
 
 void goat_player_view_refresh(goat_player_view *view);
+void free_goat_player_view(goat_player_view *view);
 
 #endif
 

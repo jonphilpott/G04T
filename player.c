@@ -6,6 +6,16 @@
 #include "thread.h"
 #include "player.h"
 
+void free_goat_player(goat_player *player)
+{
+     /* free up the threads */
+     int i;
+     for (i = 0; i < GOAT_MAX_THREADS; i++) {
+          free_goat_thread(player->threads[i]);
+     }
+     free(player);
+}
+
 goat_player *
 make_goat_player(goat_mem *mem, unsigned int pz_start, unsigned int pz_end)
 {
