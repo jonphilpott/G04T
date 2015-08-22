@@ -17,21 +17,25 @@ this the first gamepad driven assembler ever, impressed? You can move
 throughout the memory space and alter its contents to build your
 program - what's stopping you from just scrolling to your opponents
 space and messing them up? well, nothing - except each player has a 64
-byte "protected zone" that only that player can alter with the gamepad
-- if your code is outside of that area, it's in danger. There is,
-however, nothing stopping your opponents CODE from altering the memory
-inside your protected area.
+byte "protected zone" that only that player can alter with their
+gamepad - if your code is outside of that area, it's in danger. There
+is, however, nothing stopping your opponents CODE from altering the
+memory inside your protected area.
 
 This game was developed on the Raspberry-Pi using SDL and Emacs. Enjoy.
 
 
 Status:
+-------
+
  * Currently not playable
  * License: GPL 
  * Requires: sdl1.2
 
 
 Credits:
+--------
+
  * The font is copied from the DOSBOX source.
 
 
