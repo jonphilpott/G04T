@@ -78,7 +78,7 @@ goat_thread_status goat_player_tick(goat_player *player)
 
      /* find a thread */
      for (i = 0 ; i < GOAT_MAX_THREADS; i++) {
-          unsigned int c = (player->cur_thread + 1 + i) % GOAT_MAX_THREADS;
+          unsigned int c = (player->cur_thread + i) % GOAT_MAX_THREADS;
           if (goat_thread_runnable(player->threads[c])) {
                t = player->threads[c];
                player->cur_thread = c;
@@ -92,7 +92,8 @@ goat_thread_status goat_player_tick(goat_player *player)
      if (t->status == GOAT_THREAD_DEAD) {
           player->running_threads--;
      }
-
+     
+     player->cur_thread++;
      return t->status;
 }
 

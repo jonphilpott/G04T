@@ -64,6 +64,31 @@ make_goat_player_view(goat_player *player,
      return gpv;
 }
 
+void text_buffer_draw_box(text_buffer *text_buffer, int cx, int cy, int w, int h)
+{
+     int x;
+     int y;
+
+     // top & bottom line
+     for (x = cx+1 ; x < cx+w; x++) {
+          text_buffer->buffer[(cy * text_buffer->w) + x] = '\xcd';
+          text_buffer->buffer[((cy + h) * text_buffer->w) + x] = '\xcd';
+     }
+
+     // sides
+     for (y = cy+1 ; y < cy+h; y++) {
+          text_buffer->buffer[(y * text_buffer->w) + cx] = '\xba';
+          text_buffer->buffer[(y * text_buffer->w) + cx + w] = '\xba';
+     } 
+
+     // corners
+     text_buffer->buffer[(cy * text_buffer->w) + cx]           = '\xc9';
+     text_buffer->buffer[(cy * text_buffer->w) + cx + w]       = '\xbb';
+     text_buffer->buffer[((cy + h) * text_buffer->w) + cx]     = '\xc8';
+     text_buffer->buffer[((cy + h) * text_buffer->w) + cx + w] = '\xbc';
+
+}
+
 
 void text_buffer_write(text_buffer *text_buffer, int x, int y, char *str, size_t n)
 {
@@ -86,8 +111,10 @@ void goat_player_view_refresh(goat_player_view *view)
      char *no_instr = "???";
      goat_instruction *gi;
 
+     text_buffer_draw_box(view->text_buffer, view->cx, view->cy, 33, 22);
+     text_buffer_draw_box(view->text_buffer, view->cx, view->cy + 23, 33, 10);
 
-     for (i = 0 ; i < 16; i++) {
+     for (i = 0 ; i < 21; i++) {
           unsigned p = s_ptr + (2 * i);
           unsigned int loc = goat_mem_normalise(view->mem, p);
           unsigned char  a = goat_mem_get(view->mem, p);
@@ -109,5 +136,38 @@ void goat_player_view_refresh(goat_player_view *view)
                );
           text_buffer_write(view->text_buffer, view->cx + 1, view->cy + 1 + i, line_buffer, 32);
      }
+
+     text_buffer_write(view->text_buffer, view->cx + 1, view->cy + 24,
+                       "CPU REGS: ", 10);
+
+     for (i = 0; i < GOAT_MAX_THREADS; i++) {
+          goat_thread *thread = view->player->threads[i];
+          bzero((void *) line_buffer, 32);
+          char st = '?';
+
+          switch (thread->status) {
+          case GOAT_THREAD_AVAILABLE: st = 'A'; break;
+          case GOAT_THREAD_RUNNING:   st = 'R'; break;
+          case GOAT_THREAD_EXECUTING: st = 'E'; break;
+          case GOAT_THREAD_DEAD:      st = 'X'; break;
+          }
+
+
+          snprintf(line_buffer, 32, "%01X\xaf%c P:%04Xh A:%02Xh B:%02Xh X:%02Xh",
+                   i,
+                   st,
+                   thread->pc,
+                   thread->a,
+                   thread->b,
+                   thread->x
+               );
+          text_buffer_write(view->text_buffer, 
+                            view->cx + 1, 
+                            view->cy + 24 + 1 + i, 
+                            line_buffer,
+                            32);
+
+     }
+
 }
 

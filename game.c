@@ -40,8 +40,16 @@ goat_game * make_goat_game()
      game->mem = mem;
      game->p1_view = p1v;
      game->p2_view = p2v;
+     game->ctx = 1;
          
      return game;
+}
+
+void goat_game_tick(goat_game *game)
+{
+     goat_player *player = (game->ctx & 1) ? game->p1 : game->p2;
+     goat_player_tick(player);
+     game->ctx++;
 }
 
 

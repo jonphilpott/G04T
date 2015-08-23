@@ -13,10 +13,12 @@ struct goat_game {
      goat_player_view *p1_view, *p2_view;
      goat_mem *mem;
      text_buffer *text_buffer;
+     unsigned int ctx;
 };
 
 
 goat_game * make_goat_game();
+void goat_game_tick(goat_game *game);
 void free_goat_game(goat_game *game);
 
 #endif

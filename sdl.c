@@ -92,6 +92,13 @@ int sdl_main_loop(SDL_Surface *screen, goat_game *game)
                          break;
                     case SDLK_MINUS:
                          goat_mem_inc(game->mem, game->p1->edit_ptr, -1);
+                         break;
+                    case SDLK_RETURN:
+                         goat_player_spawn_thread(game->p1, game->p1->edit_ptr);
+                         break;
+                    case SDLK_t:
+                         goat_game_tick(game);
+                         break;
                     }
                     break;
                }

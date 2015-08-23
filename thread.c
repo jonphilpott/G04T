@@ -7,15 +7,17 @@
 
 
 goat_instruction instructions[] = {
-     //op  cycles  str         branch?  has_arg?  handler
-     {1,   1,      "NOP",      0,       0,        &goat_instr_nop        },
-     {2,   1,      "MOV A, ",  0,       1,        &goat_instr_mov_a_imm  },
-     {3,   1,      "MOV B, A", 0,       0,        &goat_instr_mov_b_a    },
-     {4,   2,      "JMP ",     1,       1,        &goat_instr_jmp        }
+     //op  cycles  str          branch?  has_arg?  handler
+     {1,   1,      "NOP",       0,       0,        &goat_instr_nop        },
+     {2,   1,      "MOV A, ",   0,       1,        &goat_instr_mov_a_imm  },
+     {3,   1,      "MOV B, A",  0,       0,        &goat_instr_mov_b_a    },
+     {4,   2,      "JMP ",      1,       1,        &goat_instr_jmp        },
+     {5,   1,      "XCHG B, X", 0,       0,        &goat_instr_xchg_b_x   },
+     {6,   1,      "ADD  A, B", 0,       0,        &goat_instr_add_a_b    }
 };
 
 /* will break if this is wrong */
-unsigned int n_instructions = 4;
+unsigned int n_instructions = 6;
 
 goat_instruction *
 get_goat_instruction(unsigned char opcode) 
@@ -49,6 +51,20 @@ int goat_instr_jmp(goat_mem *mem, goat_thread *thread, unsigned char arg)
 {
      signed char a = (signed char) arg;
      return a;
+}
+
+int goat_instr_xchg_b_x(goat_mem *mem, goat_thread *thread, unsigned char arg)
+{
+     int t = thread->b;
+     thread->b = thread->x;
+     thread->x = t;
+     return 2;
+}
+
+int goat_instr_add_a_b(goat_mem *mem, goat_thread *thread, unsigned char arg) 
+{
+     thread->a += thread->b;
+     return 2;
 }
 
 goat_thread *
@@ -87,7 +103,7 @@ goat_thread_tick(goat_thread *thread)
           goat_instruction *gi = get_goat_instruction(opcode);
 
           if (gi == NULL) {
-               thread->status == GOAT_THREAD_DEAD;
+               thread->status = GOAT_THREAD_DEAD;
                return thread->status;
           }
 

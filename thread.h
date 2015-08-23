@@ -59,6 +59,8 @@ int goat_instr_nop(goat_mem *mem, goat_thread *thread, unsigned char arg);
 int goat_instr_mov_a_imm(goat_mem *mem, goat_thread *thread, unsigned char arg);
 int goat_instr_mov_b_a(goat_mem *mem, goat_thread *thread, unsigned char arg);
 int goat_instr_jmp(goat_mem *mem, goat_thread *thread, unsigned char arg);
+int goat_instr_xchg_b_x(goat_mem *mem, goat_thread *thread, unsigned char arg);
+int goat_instr_add_a_b(goat_mem *mem, goat_thread *thread, unsigned char arg);
 
 #endif
 
