@@ -96,6 +96,19 @@ void text_buffer_write(text_buffer *text_buffer, int x, int y, char *str, size_t
      memcpy(text_buffer->buffer + offset, str, n);
 }
 
+unsigned int goat_player_has_thread_here(goat_player *player, unsigned int loc)
+{
+     int i;
+     for (i = 0 ; i < GOAT_MAX_THREADS ; i++) {
+          goat_thread *t = player->threads[i];
+          int tl = t->pc & (-1 << 1);
+          if (tl == loc) {
+               return 1;
+          }
+     }
+
+     return 0;
+}
 
 void goat_player_view_refresh(goat_player_view *view)
 {
@@ -125,7 +138,9 @@ void goat_player_view_refresh(goat_player_view *view)
           bzero((void *) line_buffer, 32);
 
 
-          snprintf(line_buffer, 32, "%04X%c%02X%c%02X %s %02Xh", 
+          snprintf(line_buffer, 32, "%c%c%04X%c%02X%c%02X %s %02Xh",
+                   goat_player_has_thread_here(view->opponent, loc) ? 'E' : ' ',
+                   goat_player_has_thread_here(view->player,   loc) ? '[' : ' ',
                    loc, 
                    (p == ptr) ? '\x10' : ' ',
                    a, 

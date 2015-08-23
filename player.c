@@ -36,6 +36,7 @@ make_goat_player(goat_mem *mem, unsigned int pz_start, unsigned int pz_end)
 
      for (i = 0 ; i < GOAT_MAX_THREADS; i++) {
           p->threads[i] = make_goat_thread(mem);
+          p->threads[i]->pc = pz_start;
      }
 
      return p;
