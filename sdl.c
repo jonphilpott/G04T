@@ -106,7 +106,7 @@ int sdl_main_loop(SDL_Surface *screen, goat_game *game)
           
           goat_player_view_refresh(game->p1_view);
           goat_player_view_refresh(game->p2_view);
-
+          goat_game_view_refresh(game);
           sdl_draw_text_buffer(game->text_buffer, screen);
           SDL_UpdateRect(screen, 0, 0, 0, 0);
           SDL_Flip(screen);

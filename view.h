@@ -3,6 +3,7 @@
 
 #include "player.h"
 #include "mem.h"
+#include "game.h"
 
 
 typedef struct goat_player_view goat_player_view;

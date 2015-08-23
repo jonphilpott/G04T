@@ -2,7 +2,9 @@
 #include <SDL.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
+#include "game.h"
 #include "player.h"
 #include "mem.h"
 #include "thread.h"
@@ -102,13 +104,15 @@ unsigned int goat_player_has_thread_here(goat_player *player, unsigned int loc)
      for (i = 0 ; i < GOAT_MAX_THREADS ; i++) {
           goat_thread *t = player->threads[i];
           int tl = t->pc & (-1 << 1);
-          if (tl == loc) {
+          if (goat_thread_runnable(t) && tl == loc) {
                return 1;
           }
      }
 
      return 0;
 }
+
+
 
 void goat_player_view_refresh(goat_player_view *view)
 {
@@ -125,7 +129,7 @@ void goat_player_view_refresh(goat_player_view *view)
      goat_instruction *gi;
 
      text_buffer_draw_box(view->text_buffer, view->cx, view->cy, 33, 22);
-     text_buffer_draw_box(view->text_buffer, view->cx, view->cy + 23, 33, 10);
+     text_buffer_draw_box(view->text_buffer, view->cx, view->cy + 23, 33, 6);
 
      for (i = 0 ; i < 21; i++) {
           unsigned p = s_ptr + (2 * i);

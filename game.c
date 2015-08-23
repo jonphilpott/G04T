@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 #include "game.h"
 #include "mem.h"
@@ -43,6 +44,26 @@ goat_game * make_goat_game()
      game->ctx = 1;
          
      return game;
+}
+
+void goat_game_view_refresh(goat_game *game) 
+{
+     char *static_lines[] = { 
+          " CYBERGOAT ",
+          "  SYSTEMS  ",
+          " SYS:G0-4T ",
+          "-----------"
+     };
+     int i;
+
+     for (i = 0 ; i < 3 ; i++) {
+          text_buffer_write(game->text_buffer, 
+                            34, 
+                            i+1,
+                            static_lines[i],
+                            strlen(static_lines[i])
+               );
+     }
 }
 
 void goat_game_tick(goat_game *game)

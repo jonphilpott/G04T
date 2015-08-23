@@ -18,6 +18,7 @@ struct goat_game {
 
 
 goat_game * make_goat_game();
+void goat_game_view_refresh(goat_game *game);
 void goat_game_tick(goat_game *game);
 void free_goat_game(goat_game *game);
 
