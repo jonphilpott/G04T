@@ -34,6 +34,7 @@ goat_sdl *  sdl_init()
 
 
      if (SDL_NumJoysticks() < 1) {
+          printf("No game controllers detected. Quitting.");
           return NULL;
      }
 

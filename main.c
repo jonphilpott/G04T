@@ -8,7 +8,11 @@
 int main(int argc, char *argv[])
 {
      goat_sdl *sdl = sdl_init();
-     assert(sdl != NULL);
+
+     if (sdl == NULL) {
+          return 1;
+     }
+
      goat_game *game = make_goat_game();
 
      sdl_main_loop(sdl, game);
