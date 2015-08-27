@@ -103,27 +103,27 @@ int goat_instr_sub_a_b(goat_mem *mem, goat_thread *thread, unsigned char arg)
 
 int goat_instr_mov_a_indr_b(goat_mem *mem, goat_thread *thread, unsigned char arg)
 {
-     thread->a = goat_mem_get(mem, thread->pc + thread->b);
+     thread->a = goat_mem_get(mem, thread->pc + ((signed char) thread->b));
      return 2;
 }
 
 int goat_instr_mov_indr_b_a(goat_mem *mem, goat_thread *thread, unsigned char arg)
 {
-     goat_mem_put(mem, thread->pc + thread->b, thread->a);
+     goat_mem_put(mem, thread->pc + ((signed char) thread->b), thread->a);
      return 2;
 }
 
 int goat_instr_mov16_ab_indr_x(goat_mem *mem, goat_thread *thread, unsigned char arg)
 {
-     thread->a = goat_mem_get(mem, thread->x + thread->pc);
-     thread->b = goat_mem_get(mem, thread->x + thread->pc + 1);
+     thread->a = goat_mem_get(mem, ((signed char) thread->x) + thread->pc);
+     thread->b = goat_mem_get(mem, ((signed char) thread->x) + thread->pc + 1);
      return 2;
 }
 
 int goat_instr_mov16_indr_x_ab(goat_mem *mem, goat_thread *thread, unsigned char arg)
 {
-     goat_mem_put(mem, thread->x + thread->pc, thread->a);
-     goat_mem_put(mem, thread->x + thread->pc + 1, thread->b);
+     goat_mem_put(mem, ((signed char) thread->x) + thread->pc, thread->a);
+     goat_mem_put(mem, ((signed char) thread->x) + thread->pc + 1, thread->b);
      
      return 2;
 }
@@ -166,13 +166,13 @@ int goat_instr_dec_b(goat_mem *mem, goat_thread *thread, unsigned char arg)
 
 int goat_instr_dec_indr(goat_mem *mem, goat_thread *thread, unsigned char arg)
 {
-     goat_mem_inc(mem, thread->pc + arg, -1);
+     goat_mem_inc(mem, thread->pc + (signed char) arg, -1);
      return 2;
 }
 
 int goat_instr_dec_indr_b(goat_mem *mem, goat_thread *thread, unsigned char arg)
 {
-     goat_mem_inc(mem, thread->pc + thread->b, -1);
+     goat_mem_inc(mem, thread->pc + (signed char) thread->b, -1);
      return 2;
 }
 
