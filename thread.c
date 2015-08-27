@@ -7,7 +7,7 @@
 
 
 goat_instruction instructions[] = {
-     //op  cycles  str             branch?  has_arg?  handler
+     //op  cycles  str              signed?  has_arg?  handler
      {1,   1,      "NOP ",          0,       0,        &goat_instr_nop             },
      {2,   1,      "MOV  A,",       0,       1,        &goat_instr_mov_a_imm       },
      {3,   1,      "MOV  B, A",     0,       0,        &goat_instr_mov_b_a         },
@@ -27,8 +27,8 @@ goat_instruction instructions[] = {
      {17,  1,      "DEC  B",        0,       0,        &goat_instr_dec_b           },
      {18,  1,      "DEC  *",        0,       1,        &goat_instr_dec_indr        },
      {19,  1,      "DEC  [B]",      0,       0,        &goat_instr_dec_indr_b      },
-     {20,  1,      "SHL  A",        0,       0,        &goat_instr_shl_a           },
-     {21,  1,      "SHR  A",        0,       0,        &goat_instr_shr_a           },
+     {20,  1,      "SHL  A,",       0,       1,        &goat_instr_shl_a           },
+     {21,  1,      "SHR  A,",       0,       1,        &goat_instr_shr_a           },
      {22,  2,      "JMP ",          1,       1,        &goat_instr_jmp             },
      {23,  2,      "JZ  ",          1,       1,        &goat_instr_jz              },
      {24,  2,      "JNZ ",          1,       1,        &goat_instr_jnz             },
@@ -248,7 +248,7 @@ int goat_instr_neg_a(goat_mem *mem, goat_thread *thread, unsigned char arg)
 
 int goat_instr_not_a(goat_mem *mem, goat_thread *thread, unsigned char arg)
 {
-     thread->a = !thread->a;
+     thread->a = ~(thread->a);
      return 2;
 }
 

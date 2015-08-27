@@ -17,7 +17,7 @@ struct goat_instruction {
      unsigned char opcode;
      unsigned int cycles;
      char     *str;
-     unsigned char is_branch;
+     unsigned char is_arg_signed;
      unsigned char has_arg;
 
      int (*handler)(goat_mem *mem, goat_thread *thread, unsigned char arg);

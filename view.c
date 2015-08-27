@@ -9,34 +9,8 @@
 #include "mem.h"
 #include "thread.h"
 #include "view.h"
+#include "sdl.h"
 
-text_buffer *
-make_text_buffer(int w, int h) 
-{
-     text_buffer *tb = 
-          (text_buffer *) malloc(sizeof(text_buffer));
-
-     assert(tb != NULL);
-
-     unsigned char *b = 
-          (unsigned char *) malloc(w * h);
-
-     bzero(b, w*h);
-
-     assert(b != NULL);
-
-     tb->w = w; 
-     tb->h = h;
-     tb->buffer = b;
-     
-     return tb;
-}
-
-void free_text_buffer(text_buffer *text_buffer)
-{
-     free(text_buffer->buffer);
-     free(text_buffer);
-}
 
 void free_goat_player_view(goat_player_view *view)
 {
@@ -66,37 +40,6 @@ make_goat_player_view(goat_player *player,
      return gpv;
 }
 
-void text_buffer_draw_box(text_buffer *text_buffer, int cx, int cy, int w, int h)
-{
-     int x;
-     int y;
-
-     // top & bottom line
-     for (x = cx+1 ; x < cx+w; x++) {
-          text_buffer->buffer[(cy * text_buffer->w) + x] = '\xcd';
-          text_buffer->buffer[((cy + h) * text_buffer->w) + x] = '\xcd';
-     }
-
-     // sides
-     for (y = cy+1 ; y < cy+h; y++) {
-          text_buffer->buffer[(y * text_buffer->w) + cx] = '\xba';
-          text_buffer->buffer[(y * text_buffer->w) + cx + w] = '\xba';
-     } 
-
-     // corners
-     text_buffer->buffer[(cy * text_buffer->w) + cx]           = '\xc9';
-     text_buffer->buffer[(cy * text_buffer->w) + cx + w]       = '\xbb';
-     text_buffer->buffer[((cy + h) * text_buffer->w) + cx]     = '\xc8';
-     text_buffer->buffer[((cy + h) * text_buffer->w) + cx + w] = '\xbc';
-
-}
-
-
-void text_buffer_write(text_buffer *text_buffer, int x, int y, char *str, size_t n)
-{
-     unsigned int offset = (y * text_buffer->w) + x;
-     memcpy(text_buffer->buffer + offset, str, n);
-}
 
 unsigned int goat_player_has_thread_here(goat_player *player, unsigned int loc)
 {
@@ -111,8 +54,6 @@ unsigned int goat_player_has_thread_here(goat_player *player, unsigned int loc)
 
      return 0;
 }
-
-
 
 void goat_player_view_refresh(goat_player_view *view)
 {
@@ -140,19 +81,49 @@ void goat_player_view_refresh(goat_player_view *view)
           char *m = (gi == NULL) ? no_instr : gi->str;
 
           bzero((void *) line_buffer, 32);
-
-
-          snprintf(line_buffer, 32, "%c%c%04X%c%02X%c%02X %s %02Xh",
-                   goat_player_has_thread_here(view->opponent, loc) ? 'E' : ' ',
-                   goat_player_has_thread_here(view->player,   loc) ? '[' : ' ',
-                   loc, 
-                   (p == ptr) ? '\x10' : ' ',
-                   a, 
-                   (p+1 == ptr) ? '\x10' : ' ',
-                   b,
-                   m,
-                   (gi != NULL && gi->has_arg == 1) ? b : 0
-               );
+          
+          /* TODO: Make this suck less. */
+		
+          if (gi != NULL && gi->has_arg) {
+               if (gi->is_arg_signed) {
+                    snprintf(line_buffer, 32, "%c%c%04X%c%02X%c%02X %s %hhd",
+                             goat_player_has_thread_here(view->opponent, loc) ? 'E' : ' ',
+                             goat_player_has_thread_here(view->player,   loc) ? '[' : ' ',
+                             loc, 
+                             (p == ptr) ? '\x10' : ' ',
+                             a, 
+                             (p+1 == ptr) ? '\x10' : ' ',
+                             b,
+                             m,
+                             (signed char) b
+                         );
+               }
+               else {
+                    snprintf(line_buffer, 32, "%c%c%04X%c%02X%c%02X %s %02Xh",
+                             goat_player_has_thread_here(view->opponent, loc) ? 'E' : ' ',
+                             goat_player_has_thread_here(view->player,   loc) ? '[' : ' ',
+                             loc, 
+                             (p == ptr) ? '\x10' : ' ',
+                             a, 
+                             (p+1 == ptr) ? '\x10' : ' ',
+                             b,
+                             m,
+                             b
+                         );
+               }
+          } 
+          else {
+               snprintf(line_buffer, 32, "%c%c%04X%c%02X%c%02X %s",
+                        goat_player_has_thread_here(view->opponent, loc) ? 'E' : ' ',
+                        goat_player_has_thread_here(view->player,   loc) ? '[' : ' ',
+                        loc, 
+                        (p == ptr) ? '\x10' : ' ',
+                        a, 
+                        (p+1 == ptr) ? '\x10' : ' ',
+                        b,
+                        m
+                    );
+          }
           text_buffer_write(view->text_buffer, view->cx + 1, view->cy + 1 + i, line_buffer, 32);
      }
 

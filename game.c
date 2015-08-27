@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <string.h>
 
+#include "sdl.h"
 #include "game.h"
 #include "mem.h"
 #include "player.h"
@@ -71,6 +72,31 @@ void goat_game_tick(goat_game *game)
      goat_player *player = (game->ctx & 1) ? game->p1 : game->p2;
      goat_player_tick(player);
      game->ctx++;
+}
+
+
+void goat_game_handle_input(goat_game *game, SDL_Event *event)
+{
+     goat_player *p;
+     switch (event->type) {
+     case SDL_JOYHATMOTION:
+          p = game->p1;
+          switch (event->jhat.value) {
+          case SDL_HAT_UP:
+               p->edit_ptr -= 2;
+               break;
+          case SDL_HAT_DOWN:
+               p->edit_ptr += 2;
+               break;
+          case SDL_HAT_LEFT:
+               p->edit_ptr -= 1;
+               break;
+          case SDL_HAT_RIGHT:
+               p->edit_ptr += 1;
+               break;
+          }
+          break;
+     }
 }
 
 

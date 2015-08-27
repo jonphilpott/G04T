@@ -25,13 +25,6 @@ struct goat_player_view {
      text_buffer *text_buffer;
 };
 
-
-
-
-text_buffer * make_text_buffer(int w, int h);
-void free_text_buffer(text_buffer *text_buffer);
-
-void text_buffer_write(text_buffer *text_buffer, int x, int y, char *str, size_t n);
 unsigned int goat_player_has_thread_here(goat_player *player, unsigned int loc);
 goat_player_view * make_goat_player_view(goat_player *player, 
                                          goat_player *opponent, 

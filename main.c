@@ -1,15 +1,17 @@
 #include <SDL.h>
+#include <assert.h>
+
 #include "sdl.h"
 
 #include "game.h"
 
 int main(int argc, char *argv[])
 {
-     SDL_Surface *screen = sdl_init();
-     
+     goat_sdl *sdl = sdl_init();
+     assert(sdl != NULL);
      goat_game *game = make_goat_game();
 
-     sdl_main_loop(screen, game);
+     sdl_main_loop(sdl, game);
 
      free_goat_game(game);
 

@@ -1,6 +1,7 @@
 #ifndef _GOAT_GAME_H
 #define _GOAT_GAME_H
 
+#include <SDL.h>
 #include "mem.h"
 #include "player.h"
 #include "view.h"
@@ -21,5 +22,7 @@ goat_game * make_goat_game();
 void goat_game_view_refresh(goat_game *game);
 void goat_game_tick(goat_game *game);
 void free_goat_game(goat_game *game);
+void goat_game_handle_input(goat_game *game, SDL_Event *event);
+
 
 #endif
