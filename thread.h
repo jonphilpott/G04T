@@ -68,12 +68,7 @@ int goat_instr_mov16_ab_indr_x(goat_mem *mem, goat_thread *thread, unsigned char
 int goat_instr_mov16_indr_x_ab(goat_mem *mem, goat_thread *thread, unsigned char arg);
 int goat_instr_inc_a(goat_mem *mem, goat_thread *thread, unsigned char arg);
 int goat_instr_inc_b(goat_mem *mem, goat_thread *thread, unsigned char arg);
-int goat_instr_inc_indr(goat_mem *mem, goat_thread *thread, unsigned char arg);
 int goat_instr_inc_indr_b(goat_mem *mem, goat_thread *thread, unsigned char arg);
-int goat_instr_dec_a(goat_mem *mem, goat_thread *thread, unsigned char arg);
-int goat_instr_dec_b(goat_mem *mem, goat_thread *thread, unsigned char arg);
-int goat_instr_dec_indr(goat_mem *mem, goat_thread *thread, unsigned char arg);
-int goat_instr_dec_indr_b(goat_mem *mem, goat_thread *thread, unsigned char arg);
 int goat_instr_shl_a(goat_mem *mem, goat_thread *thread, unsigned char arg);
 int goat_instr_shr_a(goat_mem *mem, goat_thread *thread, unsigned char arg);
 int goat_instr_jmp(goat_mem *mem, goat_thread *thread, unsigned char arg);
