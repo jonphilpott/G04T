@@ -98,3 +98,11 @@ goat_thread_status goat_player_tick(goat_player *player)
      return t->status;
 }
 
+unsigned int goat_player_loc_protected(goat_player *player, unsigned int loc)
+{
+     if (loc >= player->pz_start && loc <= player->pz_end) {
+          return 1;
+     }
+
+     return 0;
+}

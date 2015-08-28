@@ -29,5 +29,6 @@ goat_player * make_goat_player(goat_mem *mem, unsigned int pz_start, unsigned in
 void free_goat_player(goat_player *player);
 goat_thread_status goat_player_tick(goat_player *player);
 unsigned int goat_player_spawn_thread(goat_player *p, unsigned int location);
+unsigned int goat_player_loc_protected(goat_player *player, unsigned int loc);
 
 #endif

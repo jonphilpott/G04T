@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <time.h>
 
 #include "sdl.h"
 #include "game.h"
@@ -16,10 +17,20 @@ goat_game * make_goat_game()
           (goat_game *) malloc(sizeof(goat_game));
 
      assert(game != NULL);
-
+           
      goat_mem *mem = make_goat_mem(512);
-     goat_player *p1 = make_goat_player(mem, 0, 64);
-     goat_player *p2 = make_goat_player(mem, 128, 192);
+
+     srand((unsigned int) time(NULL));
+     unsigned int p1_start = (rand() % 512) & (-1 << 1);
+     unsigned int p1_end   = goat_mem_normalise(mem, p1_start + 64);
+
+     unsigned int p2_start = goat_mem_normalise(mem, p1_end + rand() % (512-64));
+     unsigned int p2_end = goat_mem_normalise(mem, p2_start + 64);
+
+
+
+     goat_player *p1 = make_goat_player(mem, p1_start, p1_end);
+     goat_player *p2 = make_goat_player(mem, p2_start, p2_end);
 
      text_buffer *tb = make_text_buffer(80, 34);
      
