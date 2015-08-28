@@ -95,7 +95,6 @@ int sdl_main_loop(goat_sdl *gsdl, goat_game *game)
      while (keep_going) {
           if (SDL_PollEvent(&event)) {
                goat_game_handle_input(game, &event);
-               printf("got event: %u\n", event.type);
                switch(event.type) {
                case SDL_QUIT:
                     keep_going = 0;
@@ -105,29 +104,7 @@ int sdl_main_loop(goat_sdl *gsdl, goat_game *game)
                     case SDLK_ESCAPE:
                          keep_going = 0;
                          break;
-                    case SDLK_DOWN:
-                         game->p1->edit_ptr += 2;
-                         break;
-                    case SDLK_UP:
-                         game->p1->edit_ptr -= 2;
-                         break;
-                    case SDLK_LEFT:
-                         game->p1->edit_ptr -= 1;
-                         break;
-                    case SDLK_RIGHT:
-                         game->p1->edit_ptr += 1;
-                         break;
-                    case SDLK_EQUALS:
-                         goat_mem_inc(game->mem, game->p1->edit_ptr, 1);
-                         break;
-                    case SDLK_MINUS:
-                         goat_mem_inc(game->mem, game->p1->edit_ptr, -1);
-                         break;
-                    case SDLK_RETURN:
-                         goat_player_spawn_thread(game->p1, game->p1->edit_ptr);
-                         break;
                     }
-                    break;
                }
           }
           
@@ -143,7 +120,6 @@ int sdl_main_loop(goat_sdl *gsdl, goat_game *game)
      SDL_Quit();
      return 0;
 }
-
 
 text_buffer *
 make_text_buffer(int w, int h) 
