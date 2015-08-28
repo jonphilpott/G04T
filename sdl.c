@@ -33,14 +33,15 @@ goat_sdl *  sdl_init()
      gsdl->screen = screen;
 
 
-     if (SDL_NumJoysticks() < 1) {
+     if (SDL_NumJoysticks() < 2) {
           printf("No game controllers detected. Quitting.");
           return NULL;
      }
 
      gsdl->p1_stick = SDL_JoystickOpen(0);
+     gsdl->p2_stick = SDL_JoystickOpen(1);
 
-     if (gsdl->p1_stick == NULL) {
+     if (gsdl->p1_stick == NULL || gsdl->p2_stick == NULL) {
           return NULL;
      }
 
@@ -94,6 +95,7 @@ int sdl_main_loop(goat_sdl *gsdl, goat_game *game)
      while (keep_going) {
           if (SDL_PollEvent(&event)) {
                goat_game_handle_input(game, &event);
+               printf("got event: %u\n", event.type);
                switch(event.type) {
                case SDL_QUIT:
                     keep_going = 0;
@@ -124,14 +126,12 @@ int sdl_main_loop(goat_sdl *gsdl, goat_game *game)
                     case SDLK_RETURN:
                          goat_player_spawn_thread(game->p1, game->p1->edit_ptr);
                          break;
-                    case SDLK_t:
-                         goat_game_tick(game);
-                         break;
                     }
                     break;
                }
           }
           
+          goat_game_tick(game);
           goat_player_view_refresh(game->p1_view);
           goat_player_view_refresh(game->p2_view);
           goat_game_view_refresh(game);

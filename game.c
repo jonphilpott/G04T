@@ -22,10 +22,13 @@ goat_game * make_goat_game()
 
      srand((unsigned int) time(NULL));
      unsigned int p1_start = (rand() % 512) & (-1 << 1);
-     unsigned int p1_end   = goat_mem_normalise(mem, p1_start + 64);
+     unsigned int p1_end   = goat_mem_normalise(mem, p1_start + 32);
 
-     unsigned int p2_start = goat_mem_normalise(mem, p1_end + rand() % (512-64));
-     unsigned int p2_end = goat_mem_normalise(mem, p2_start + 64);
+     unsigned int p2_start = goat_mem_normalise(
+          mem, 
+          p1_end + (rand() % (512-64)) & (-1 << 1)
+          );
+     unsigned int p2_end = goat_mem_normalise(mem, p2_start + 32);
 
 
 
@@ -54,6 +57,11 @@ goat_game * make_goat_game()
      game->p1_view = p1v;
      game->p2_view = p2v;
      game->ctx = 1;
+     game->tick_interval = GOAT_GAME_TICK_INTERVAL_MS;
+     game->next_tick = SDL_GetTicks() + game->tick_interval;
+     game->player_tick_interval = GOAT_GAME_PLAYER_TICK_INTERVAL;
+     game->player_next_tick = SDL_GetTicks() + game->player_tick_interval;
+     
          
      return game;
 }
@@ -80,9 +88,29 @@ void goat_game_view_refresh(goat_game *game)
 
 void goat_game_tick(goat_game *game)
 {
-     goat_player *player = (game->ctx & 1) ? game->p1 : game->p2;
-     goat_player_tick(player);
-     game->ctx++;
+     Uint32 t = SDL_GetTicks();
+
+     if (t >= game->next_tick) {
+          goat_player *player = (game->ctx & 1) ? game->p1 : game->p2;
+          goat_player_tick(player);
+          game->ctx++;
+          game->next_tick = t + game->tick_interval;
+     }
+
+     if (t >= game->player_next_tick) {
+          game->player_next_tick = t + game->player_tick_interval;
+          
+          game->p1->edit_ptr += game->p1->edit_d;
+          game->p2->edit_ptr += game->p2->edit_d;
+
+          if ( !goat_player_loc_protected(game->p2, game->p1->edit_ptr)) {
+               goat_mem_inc(game->mem, game->p1->edit_ptr, game->p1->mem_d);
+          }
+
+          if ( !goat_player_loc_protected(game->p1, game->p1->edit_ptr)) {
+               goat_mem_inc(game->mem, game->p2->edit_ptr, game->p2->mem_d);
+          }
+     }
 }
 
 
@@ -91,25 +119,61 @@ void goat_game_handle_input(goat_game *game, SDL_Event *event)
      goat_player *p;
      switch (event->type) {
      case SDL_JOYHATMOTION:
-          p = game->p1;
+          p = event->jhat.which ? game->p2 : game->p1;
           switch (event->jhat.value) {
           case SDL_HAT_UP:
-               p->edit_ptr -= 2;
+               p->edit_d = -2;
                break;
           case SDL_HAT_DOWN:
-               p->edit_ptr += 2;
+               p->edit_d = 2;
                break;
           case SDL_HAT_LEFT:
-               p->edit_ptr -= 1;
+               p->edit_d = -1;
                break;
           case SDL_HAT_RIGHT:
-               p->edit_ptr += 1;
+               p->edit_d = +1;
+               break;
+          case SDL_HAT_CENTERED:
+               p->edit_d = 0;
                break;
           }
           break;
+     case SDL_JOYAXISMOTION:
+          p = event->jaxis.which ? game->p2 : game->p1;
+          printf("axis = %u value = %u\n", event->jaxis.axis, event->jaxis.value);
+          if (event->jaxis.value > 0) {
+               p->edit_d = (event->jaxis.axis) ? 2 : 1;
+          }
+          else if (event->jaxis.value < 0) {
+               p->edit_d = (event->jaxis.axis) ? -2 : -1;
+          }
+          else {
+               p->edit_d = 0;
+          }
+          break;
+     case SDL_JOYBUTTONDOWN:
+          p = event->jbutton.which ? game->p2 : game->p1;
+          switch (event->jbutton.button) {
+          case 0:
+               p->mem_d = 1;
+               break;
+          case 1:
+               p->mem_d = -1;
+          }
+          break;
+     case SDL_JOYBUTTONUP:
+          p = event->jbutton.which ? game->p2 : game->p1;
+          switch (event->jbutton.button) {
+          case 0:
+          case 1:
+               p->mem_d = 0;
+               break;
+          case 2:
+               goat_player_spawn_thread(p, p->edit_ptr);
+               break;
+          }
      }
 }
-
 
 void free_goat_game(goat_game *game) 
 { 

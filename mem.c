@@ -16,12 +16,6 @@ make_goat_mem(int mem_size)
      gm->last_read_loc = 0;
      gm->last_write_loc = 0;
      gm->mem = (unsigned char *) calloc(mem_size, sizeof(unsigned char));
-
-     int i;
-     for (i = 0; i < mem_size ; i++) {
-          gm->mem[i] = i % 255;
-     }
-
      assert(gm->mem != NULL);
 
      return gm;

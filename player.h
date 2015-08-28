@@ -21,7 +21,8 @@ struct goat_player {
 
      /* the current location of the users edit cursor */
      unsigned int edit_ptr;
-
+     int edit_d;
+     int mem_d;
 };
 
 

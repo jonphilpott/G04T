@@ -7,6 +7,9 @@
 #include "view.h"
 
 
+#define GOAT_GAME_TICK_INTERVAL_MS 500
+#define GOAT_GAME_PLAYER_TICK_INTERVAL 75
+
 typedef struct goat_game goat_game;
 
 struct goat_game {
@@ -15,6 +18,14 @@ struct goat_game {
      goat_mem *mem;
      text_buffer *text_buffer;
      unsigned int ctx;
+     
+
+     Uint32 tick_interval;
+     Uint32 next_tick;
+     
+     Uint32 player_tick_interval;
+     Uint32 player_next_tick;
+
 };
 
 

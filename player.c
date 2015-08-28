@@ -30,7 +30,8 @@ make_goat_player(goat_mem *mem, unsigned int pz_start, unsigned int pz_end)
      p->pz_start = pz_start;
      p->pz_end = pz_end;
      p->edit_ptr = pz_start;
-
+     p->edit_d = 0;
+     p->mem_d = 0;
      
      unsigned int i;
 

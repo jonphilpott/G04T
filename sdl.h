@@ -10,6 +10,7 @@ typedef struct goat_sdl goat_sdl;
 struct goat_sdl {
      SDL_Surface *screen;
      SDL_Joystick *p1_stick;
+     SDL_Joystick *p2_stick;
 };
 
 

@@ -81,54 +81,49 @@ void goat_player_view_refresh(goat_player_view *view)
           char *m = (gi == NULL) ? no_instr : gi->str;
 
           bzero((void *) line_buffer, 32);
+          int j;
+          for (j = 0; j < GOAT_MAX_THREADS; j++) {
+               goat_thread *t = view->player->threads[j];
+               if ((t->pc & (-1 << 1)) == loc) {
+                    line_buffer[j] = '*';
+               }
+          }
+
+          if (goat_player_has_thread_here(view->opponent, loc)) {
+               line_buffer[4] = 'E';
+          }
+
+          int l = snprintf(line_buffer+5, 27, "%04X%c%02X%c%02X %s",
+                           loc, 
+                           (p == ptr) ? '\x10' : ' ',
+                           a, 
+                           (p+1 == ptr) ? '\x10' : ' ',
+                           b,
+                           m
+               );
           
-          /* TODO: Make this suck less. */
-		
           if (gi != NULL && gi->has_arg) {
+               int r = 32 - (5 + l) + 1;
                if (gi->is_arg_signed) {
-                    snprintf(line_buffer, 32, "%c%c%04X%c%02X%c%02X %s %hhd",
-                             goat_player_has_thread_here(view->opponent, loc) ? 'E' : ' ',
-                             goat_player_has_thread_here(view->player,   loc) ? '[' : ' ',
-                             loc, 
-                             (p == ptr) ? '\x10' : ' ',
-                             a, 
-                             (p+1 == ptr) ? '\x10' : ' ',
-                             b,
-                             m,
-                             (signed char) b
-                         );
+                    snprintf(line_buffer + 6 + l, r, "%hhd", b);
                }
                else {
-                    snprintf(line_buffer, 32, "%c%c%04X%c%02X%c%02X %s %02Xh",
-                             goat_player_has_thread_here(view->opponent, loc) ? 'E' : ' ',
-                             goat_player_has_thread_here(view->player,   loc) ? '[' : ' ',
-                             loc, 
-                             (p == ptr) ? '\x10' : ' ',
-                             a, 
-                             (p+1 == ptr) ? '\x10' : ' ',
-                             b,
-                             m,
-                             b
-                         );
+                    snprintf(line_buffer + 6 + l, r, "%02Xh", b);
                }
-          } 
-          else {
-               snprintf(line_buffer, 32, "%c%c%04X%c%02X%c%02X %s",
-                        goat_player_has_thread_here(view->opponent, loc) ? 'E' : ' ',
-                        goat_player_has_thread_here(view->player,   loc) ? '[' : ' ',
-                        loc, 
-                        (p == ptr) ? '\x10' : ' ',
-                        a, 
-                        (p+1 == ptr) ? '\x10' : ' ',
-                        b,
-                        m
-                    );
           }
+
+          if (goat_player_loc_protected(view->player, loc)) {
+               line_buffer[31] = ']';
+          }
+          else if (goat_player_loc_protected(view->opponent, loc)) {
+               line_buffer[31] = 'X';
+          }
+
           text_buffer_write(view->text_buffer, view->cx + 1, view->cy + 1 + i, line_buffer, 32);
      }
 
      text_buffer_write(view->text_buffer, view->cx + 1, view->cy + 24,
-                       "CPU REGS: ", 10);
+                       " CPU REGS: ", 10);
 
      for (i = 0; i < GOAT_MAX_THREADS; i++) {
           goat_thread *thread = view->player->threads[i];
@@ -143,7 +138,7 @@ void goat_player_view_refresh(goat_player_view *view)
           }
 
 
-          snprintf(line_buffer, 32, "%01X\xaf%c P:%04Xh A:%02Xh B:%02Xh X:%02Xh",
+          snprintf(line_buffer, 32, " %01X\xaf%c P:%04Xh A:%02Xh B:%02Xh X:%02Xh",
                    i,
                    st,
                    thread->pc,
