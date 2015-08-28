@@ -29,7 +29,7 @@ This game was developed on the Raspberry-Pi using SDL and Emacs. Enjoy.
 Status:
 -------
 
- * Currently not playable
+ * Engine is playable, not polished.
  * License: GPL 
  * Requires: sdl1.2
 
