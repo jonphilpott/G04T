@@ -140,7 +140,6 @@ void goat_game_handle_input(goat_game *game, SDL_Event *event)
           break;
      case SDL_JOYAXISMOTION:
           p = event->jaxis.which ? game->p2 : game->p1;
-          printf("axis = %u value = %u\n", event->jaxis.axis, event->jaxis.value);
           if (event->jaxis.value > 0) {
                p->edit_d = (event->jaxis.axis) ? 2 : 1;
           }
