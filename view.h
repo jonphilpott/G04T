@@ -3,16 +3,9 @@
 
 #include "player.h"
 #include "mem.h"
-#include "game.h"
-
+#include "sdl.h"
 
 typedef struct goat_player_view goat_player_view;
-typedef struct text_buffer text_buffer;
-
-struct text_buffer {
-     unsigned int w, h;
-     unsigned char *buffer;
-};
 
 struct goat_player_view {
      goat_player *player;
